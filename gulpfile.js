@@ -16,8 +16,9 @@ gulp.task('html', function () {
         .pipe(connect.reload());
 });
 
-gulp.task('scripts', function() {
+gulp.task('concat', function() {
     return gulp.src([
+        './public/jspm_packages/system-polyfills.js',
         './public/jspm_packages/system.js',
         './public/dist/main-bundle.js',
         './public/config.js',
@@ -27,8 +28,20 @@ gulp.task('scripts', function() {
         .pipe(gulp.dest('./public/dist/'));
 });
 
+gulp.task('concatcsp', function() {
+    return gulp.src([
+        './public/jspm_packages/system-polyfills.js',
+        './public/jspm_packages/system-csp-production.src.js',
+        './public/dist/main-bundle.js',
+        './public/config.js',
+        './public/init.js'
+    ])
+        .pipe(concat('concat-csp.js'))
+        .pipe(gulp.dest('./public/dist/'));
+});
+
 gulp.task('watch', function () {
     gulp.watch(['./public/*.html'], ['html']);
 });
 
-gulp.task('default', ['connect', 'scripts']);
+gulp.task('default', ['connect', 'concat', 'concatcsp']);
